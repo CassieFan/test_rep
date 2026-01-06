@@ -27,17 +27,42 @@ const INITIAL_RECORDS: InspectionRecord[] = [
   }
 ];
 
+type TabType = 'dashboard' | 'new' | 'history';
+
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'new' | 'history'>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [records, setRecords] = useState<InspectionRecord[]>(INITIAL_RECORDS);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#/', '') as TabType;
+      const validTabs: TabType[] = ['dashboard', 'new', 'history'];
+      if (validTabs.includes(hash)) {
+        setActiveTab(hash);
+      } else {
+        // Default to dashboard if hash is invalid or empty
+        window.location.hash = '#/dashboard';
+      }
+    };
+
+    // Initial check
+    handleHashChange();
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const handleAddRecord = (newRecord: InspectionRecord) => {
     setRecords([newRecord, ...records]);
-    setActiveTab('history');
+    window.location.hash = '#/history';
+  };
+
+  const onTabChange = (tab: TabType) => {
+    window.location.hash = `#/${tab}`;
   };
 
   return (
-    <Layout activeTab={activeTab} onTabChange={setActiveTab}>
+    <Layout activeTab={activeTab} onTabChange={onTabChange}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'dashboard' && <Dashboard records={records} />}
         {activeTab === 'new' && <InspectionForm onSave={handleAddRecord} />}
