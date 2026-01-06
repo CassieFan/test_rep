@@ -1,0 +1,7 @@
+{
+  "name": "IntelliInspect - 智能巡查考评系统",
+  "description": "一个功能齐全、现代化的巡查考评管理系统。支持实时考评打分、AI 智能建议生成、多维度数据可视化分析，旨在提升巡查效率与考评专业度。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
